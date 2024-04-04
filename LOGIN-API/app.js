@@ -4,6 +4,8 @@ const mysql = require('mysql2');
 
 const app = express();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const secret = 'Fullstack-login-2024';
 const saltRounds = 10;
 app.use(cors());
 app.use(express.json());
@@ -37,6 +39,36 @@ app.post('/register', (req, res) => {
             }
         );
     });
+
+});
+
+app.post('/login', (req, res) => {
+    connection.execute(
+        'select * from users where email = ?', [req.body.email],
+        function (err, users, fields) {
+            if (err) {
+                res.json({ status: 'error', message: err });
+                return;
+            }
+            if (users.length == 0) {
+                res.json({ status: 'error', message: 'users not found' });
+                return;
+            }
+
+            bcrypt.compare(req.body.password, users[0].password, function (err, isLogin) {
+                if (isLogin) {
+                    var token = jwt.sign({ email: users[0].email }, secret, { expiresIn: '1h' });
+
+                    res.json({ status: 'ok', message: 'login success', token });
+                } else {
+                    res.json({ status: 'error', message: 'login failed' });
+
+                }
+            });
+
+        }
+    );
+
 
 });
 
