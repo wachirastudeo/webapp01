@@ -71,6 +71,21 @@ app.post('/login', (req, res) => {
 
 
 });
+//test token
+app.post('/authen', (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, secret);
+        res.json({ status: 'ok', message: decoded });
+
+    } catch (error) {
+
+        res.json({ status: 'error', message: error });
+
+    }
+
+
+});
 
 app.listen(3333, () => {
     console.log('server localhost');
