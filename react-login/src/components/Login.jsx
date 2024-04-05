@@ -38,10 +38,26 @@ export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+
+    const jsonData = {
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+
+    try {
+      const response = fetch("http://127.0.0.1:3333/login", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jsonData),
+      });
+
+      const result = response.json();
+      console.log("Success:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
