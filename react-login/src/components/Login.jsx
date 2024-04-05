@@ -44,20 +44,22 @@ export default function SignInSide() {
       password: data.get("password"),
     };
 
-    try {
-      const response = fetch("http://127.0.0.1:3333/login", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(jsonData),
+    fetch("http://127.0.0.1:3333/login", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(jsonData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.status);
+        localStorage.setItem("token", data.token);
+        window.location = "/album";
+      })
+      .catch((err) => {
+        console.log(`Error: ${err}`);
       });
-
-      const result = response.json();
-      console.log("Success:", result);
-    } catch (error) {
-      console.error("Error:", error);
-    }
   };
 
   return (
